@@ -96,7 +96,8 @@ p1 <-
   scale_fill_manual(values = cols) +
   theme_bw() +
   scale_linetype_manual(values = c(3, 1, 2)) +
-  theme(aspect.ratio = .618, legend.position = "none") +
+  theme(aspect.ratio = .618, legend.position = "none", 
+        panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
 
 p2 <- ggplot(data = rbind(df.A, df.ls, df.beta), 
@@ -108,7 +109,8 @@ p2 <- ggplot(data = rbind(df.A, df.ls, df.beta),
   scale_fill_manual(values = cols) +
   theme_bw() +
   scale_linetype_manual(values = c(3, 1, 2)) +
-  theme(aspect.ratio = .618, legend.position = "none") +
+  theme(aspect.ratio = .618, legend.position = "none", 
+        panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
 
 
@@ -191,7 +193,8 @@ p3 <- ggplot(data = rbind(df.A, df.ls, df.beta),
   scale_fill_manual(values = cols) +
   theme_bw() +
   scale_linetype_manual(values = c(3, 1, 2)) +
-  theme(aspect.ratio = .618, legend.position = "none") +
+  theme(aspect.ratio = .618, legend.position = "none", 
+        panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
 
 p4 <- ggplot(data = rbind(df.A, df.ls, df.beta), 
@@ -203,7 +206,8 @@ p4 <- ggplot(data = rbind(df.A, df.ls, df.beta),
   scale_fill_manual(values = cols) +
   theme_bw() +
   scale_linetype_manual(values = c(3, 1, 2)) +
-  theme(aspect.ratio = .618, legend.position = "none") +
+  theme(aspect.ratio = .618, legend.position = "none", 
+        panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
 
 
