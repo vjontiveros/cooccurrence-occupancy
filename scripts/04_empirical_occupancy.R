@@ -85,7 +85,7 @@ cols <- c(
   "LogSeries" = "#117733"   # muted purple
 )
 
- p1 <- 
+p1 <- 
   ggplot(data = rbind(df.A, df.ls, df.beta), 
        aes(x = Freqs, color = Type, linetype = Type)) + 
   geom_point(data = res.medio %>% filter(Freqs > 0), aes(x = Freqs, y = Sobs), inherit.aes = F) + 
