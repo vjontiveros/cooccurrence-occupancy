@@ -4,6 +4,13 @@ library(MASS)
 library(tidyverse)
 library(patchwork)
 
+# The next 4 lines are required to use scipy inside R
+library(reticulate)
+py_require("scipy")
+sc <- import("scipy.special")
+np <- import("numpy")
+
+# Load functions
 source("R/beta_functions.R")
 source("R/expected_A_sp_equivalence.R")
 
