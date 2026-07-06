@@ -1,16 +1,12 @@
 
 # Load packages and functions ---------------------------------------------
 library(tidyverse)
-library(minpack.lm)
+# library(minpack.lm)
 library(patchwork)
 
 source("R/expected_A_empirical.R")
 source("R/logseries_functions.R")
-source("R/beta_functions.R") 
-# Beware that beta_functions.R loads package reticulate to use python
-# implementation of hypergeometric functions, which are more stable than their R
-# counterparts. Also, it loads scipy and numpy, and saves both as objects sc and
-# np.
+
 
 # Mediolittoral -----------------------------------------------------------
 load("results/objects/resmedio.RData")
@@ -26,8 +22,8 @@ A_values <- expected_A_empirical(ps, qs, S, N)
 
 # Bootstrapping -----------------------------------------------------------
 
-# Bootstrapping the expected associations for the empirical distribution of
-# occupancies (occupancies now bootstrapped).
+# Bootstrapping the occupancies to obtain expected associations for the
+# empirical distribution of occupancies.
 
 bootstrap <- bootstrap_A_empirical(n_boot = 200, ps, qs, S, N)
 
@@ -49,13 +45,10 @@ S <- length(p_data)
 
 set.seed(42)
 
-theta_boot <- bootstrap_nlsLM_logser(
-  y_data = y_data,
-  S = S,
-  p_data = p_data,
-  B = 1000,
-  start_theta = 0.5 
-)
+theta_boot <- bootstrap_logser(p_data * N)
+
+logser_mle(p_data * N) 
+quantile(theta_boot, probs = c(0.025, 0.975))
 
 df.ls <- data.frame(Freqs = ps, 
                     Expected = curve_logSeries(S, ps, quantile(theta_boot, 0.5)),
@@ -64,29 +57,19 @@ df.ls <- data.frame(Freqs = ps,
                     Type = "LogSeries")
 
 
-# Beta distribution -------------------------------------------------------
-
-df.beta <- bootstrap_nlsLM_beta(
-  y_data = y_data,
-  S = S,
-  p_data = p_data,
-  N = N,
-  B = 1000,
-  start_alpha = 0.5,
-  start_beta = 0.5,
-  p_sim = ps
-)
 
 
 # Plotting ----------------------------------------------------------------
 cols <- c(
-  "Beta" = "#3366AA",  # muted blue
+  # "Beta" = "#3366AA",  # muted blue
   "Empirical" = "#D55E00",  # neutral grey
   "LogSeries" = "#117733"   # muted purple
 )
+linetypes <- 1:2
+
 
 p1 <- 
-  ggplot(data = rbind(df.A, df.ls, df.beta), 
+  ggplot(data = rbind(df.A, df.ls), 
        aes(x = Freqs, color = Type, linetype = Type)) + 
   geom_point(data = res.medio %>% filter(Freqs > 0), aes(x = Freqs, y = Sobs), inherit.aes = F) + 
   scale_x_log10() +
@@ -95,12 +78,12 @@ p1 <-
   scale_color_manual(values = cols) +
   scale_fill_manual(values = cols) +
   theme_bw() +
-  scale_linetype_manual(values = c(3, 1, 2)) +
+  scale_linetype_manual(values = linetypes) +
   theme(aspect.ratio = .618, legend.position = "none", 
         panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
 
-p2 <- ggplot(data = rbind(df.A, df.ls, df.beta), 
+p2 <- ggplot(data = rbind(df.A, df.ls), 
        aes(x = Freqs, color = Type, linetype = Type)) + 
   geom_point(data = res.medio %>% filter(Freqs > 0), aes(x = Freqs, y = Sobs), inherit.aes = F) + 
   geom_ribbon(aes(ymax = UCI95, ymin = LCI95, fill = Type), alpha = .5, color = NA) +
@@ -108,7 +91,7 @@ p2 <- ggplot(data = rbind(df.A, df.ls, df.beta),
   scale_color_manual(values = cols) +
   scale_fill_manual(values = cols) +
   theme_bw() +
-  scale_linetype_manual(values = c(3, 1, 2)) +
+  scale_linetype_manual(values = linetypes) +
   theme(aspect.ratio = .618, legend.position = "none", 
         panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
@@ -149,17 +132,13 @@ p_data <- res.bci %>% filter(Freqs > 0) %>% pull(Freqs)
 y_data <- res.bci %>% filter(Freqs > 0) %>% pull(Sobs)
 
 S <- length(p_data)
-N <- 1250
 
 set.seed(42)
 
-theta_boot <- bootstrap_nlsLM_logser(
-  y_data = y_data,
-  S = S,
-  p_data = p_data,
-  B = 1000,
-  start_theta = .999  
-)
+theta_boot <- bootstrap_logser(p_data * N)
+
+logser_mle(p_data * N) 
+quantile(theta_boot, probs = c(0.025, 0.975))
 
 df.ls <- data.frame(Freqs = ps, 
                     Expected = curve_logSeries(S, ps, quantile(theta_boot, 0.5)),
@@ -168,22 +147,13 @@ df.ls <- data.frame(Freqs = ps,
                     Type = "LogSeries")
 
 
-# Beta distribution -------------------------------------------------------
 
-df.beta <- bootstrap_nlsLM_beta(
-  y_data = y_data,
-  S = S,
-  p_data = p_data,
-  N = N,
-  B = 1000,
-  start_alpha = 0.5,
-  start_beta = 0.5,
-  p_sim = ps
-)
+# Plots -------------------------------------------------------------------
 
 
 
-p3 <- ggplot(data = rbind(df.A, df.ls, df.beta), 
+
+p3 <- ggplot(data = rbind(df.A, df.ls), 
        aes(x = Freqs, color = Type, linetype = Type)) + 
   geom_point(data = res.bci %>% filter(Freqs > 0), aes(x = Freqs, y = Sobs), inherit.aes = F) + 
   scale_x_log10() +
@@ -192,12 +162,12 @@ p3 <- ggplot(data = rbind(df.A, df.ls, df.beta),
   scale_color_manual(values = cols) +
   scale_fill_manual(values = cols) +
   theme_bw() +
-  scale_linetype_manual(values = c(3, 1, 2)) +
+  scale_linetype_manual(values = linetypes) +
   theme(aspect.ratio = .618, legend.position = "none", 
         panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
 
-p4 <- ggplot(data = rbind(df.A, df.ls, df.beta), 
+p4 <- ggplot(data = rbind(df.A, df.ls), 
        aes(x = Freqs, color = Type, linetype = Type)) + 
   geom_point(data = res.bci %>% filter(Freqs > 0), aes(x = Freqs, y = Sobs), inherit.aes = F) + 
   geom_ribbon(aes(ymax = UCI95, ymin = LCI95, fill = Type), alpha = .5, color = NA) +
@@ -205,7 +175,7 @@ p4 <- ggplot(data = rbind(df.A, df.ls, df.beta),
   scale_color_manual(values = cols) +
   scale_fill_manual(values = cols) +
   theme_bw() +
-  scale_linetype_manual(values = c(3, 1, 2)) +
+  scale_linetype_manual(values = linetypes) +
   theme(aspect.ratio = .618, legend.position = "none", 
         panel.grid.minor = element_blank()) +
   xlab("Occupancy") + ylab("Cooccurrences")
