@@ -1,7 +1,6 @@
 
 # Load packages and functions ---------------------------------------------
 library(tidyverse)
-# library(minpack.lm)
 library(patchwork)
 
 source("R/expected_A_empirical.R")
@@ -43,13 +42,14 @@ y_data <- res.medio %>% filter(Freqs > 0) %>% pull(Sobs)
 
 S <- length(p_data)
 
+# Getting the estimates for the logseries. First the bootstrap then the values
 set.seed(42)
-
 theta_boot <- bootstrap_logser(p_data * N)
 
 logser_mle(p_data * N) 
 quantile(theta_boot, probs = c(0.025, 0.975))
 
+# Obtain the expected curve under a logSeries distribution
 df.ls <- data.frame(Freqs = ps, 
                     Expected = curve_logSeries(S, ps, quantile(theta_boot, 0.5)),
                     UCI95 = curve_logSeries(S, ps, quantile(theta_boot, 0.975)),
@@ -133,13 +133,14 @@ y_data <- res.bci %>% filter(Freqs > 0) %>% pull(Sobs)
 
 S <- length(p_data)
 
+# Getting the estimates for the logseries. First the bootstrap then the values
 set.seed(42)
-
 theta_boot <- bootstrap_logser(p_data * N)
 
 logser_mle(p_data * N) 
 quantile(theta_boot, probs = c(0.025, 0.975))
 
+# Obtain the expected curve under a logSeries distribution
 df.ls <- data.frame(Freqs = ps, 
                     Expected = curve_logSeries(S, ps, quantile(theta_boot, 0.5)),
                     UCI95 = curve_logSeries(S, ps, quantile(theta_boot, 0.975)),
@@ -149,9 +150,6 @@ df.ls <- data.frame(Freqs = ps,
 
 
 # Plots -------------------------------------------------------------------
-
-
-
 
 p3 <- ggplot(data = rbind(df.A, df.ls), 
        aes(x = Freqs, color = Type, linetype = Type)) + 

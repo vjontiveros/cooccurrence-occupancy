@@ -239,7 +239,6 @@ sf4 <- ggplot(data = rbind(df.A, df.beta),
 # Saving plots ------------------------------------------------------------
 
 (sf3 | sf4)/(sf1 | sf2)
-
 ggsave(filename = "results/figures/fig_s2.png", width = 180, height = 143.6, 
        units = "mm", dpi = 300, )
 

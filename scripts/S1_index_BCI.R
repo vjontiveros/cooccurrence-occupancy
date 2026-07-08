@@ -41,5 +41,5 @@ ggplot(bci.demo, aes(x = PC1score, y = PC2score, fill = Index)) +
   theme(panel.grid.minor = element_blank(), aspect.ratio = 1, 
         legend.position = "bottom")
 
-ggsave(filename = "results/figures/Sfig1_tradeoffs.png", width = 90, height = 90, 
+ggsave(filename = "results/figures/fig_s1_tradeoffs.png", width = 90, height = 90, 
        units = "mm", dpi = 300, )
