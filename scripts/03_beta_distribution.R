@@ -1,6 +1,8 @@
-# Load packages -----------------------------------------------------------
+# Load packages and functions ---------------------------------------------
 library(tidyverse)
 library(patchwork)
+
+source("R/m_values.R")
 
 # U-shaped beta distribution ----------------------------------------------
 p1 <- ggplot() + xlim(0, 1) + 
