@@ -1,4 +1,4 @@
- 
+# Function to calculate the 2F1 hypergeometric, from python. 
 hyp2f1_scipy <- function(a, b, c, z) {
   # Just in case z is complex, we force dtype complex of numpy
   if (is.complex(z)) {
@@ -8,8 +8,9 @@ hyp2f1_scipy <- function(a, b, c, z) {
   sc$hyp2f1(a, b, c, z)
 }
 
+# Function to obtain the curve assuming species equivalence and beta
+# distribution.
 curve_beta <- function(S, p, N, alpha, beta) {
-
   # Guard: alpha, beta must be positive (optimizer can wander)
   if (any(alpha <= 0, beta <= 0)) return(rep(NaN, length(p)))
 
@@ -18,6 +19,7 @@ curve_beta <- function(S, p, N, alpha, beta) {
   (S - 1) * (1 - hval)
 }
 
+# Function to estimate the beta distribution corresponding to the occupancies.
 fit_beta_mle <- function(p_data) {
   # Remove boundary values (0 and 1 cause log(0) in Beta log-likelihood)
   p_clean <- p_data[p_data > 0 & p_data < 1]
@@ -38,6 +40,7 @@ fit_beta_mle <- function(p_data) {
   )
 }
 
+# Function to estimate the beta parameters by bootstrap. 
 bootstrap_beta <- function(p_data, B = 2000, ci_level = 0.95, seed = 42) {
   set.seed(seed)
 
