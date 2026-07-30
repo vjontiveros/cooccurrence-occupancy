@@ -8,7 +8,7 @@ The analyses are illustrated using two ecological case studies: tropical forest 
 
 ## Overview
 
-This repository contains the code required to reproduce the main analyses, figures, and tables from *The Co‐occurrence–Occupancy Curve in Ecological Communities: a novel approach to species association*. All analyses can be reproduced by running the scripts in the `scripts/` directory, with outputs written to `results/`.
+This repository contains the code required to reproduce the main analyses, figures, and tables from *The Co‐occurrence–Occupancy Curve in Ecological Communities: a novel approach to species association* (a first preprint of this work can be found in https://doi.org/10.64898/2026.03.19.712854). All analyses can be reproduced by running the scripts in the `scripts/` directory, with outputs written to `results/`.
 
 ## Repository structure
 
